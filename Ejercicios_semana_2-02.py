@@ -49,7 +49,7 @@ from datetime import datetime
     :
 """
 
-sPre=".tmp_"
+sPre="tmp_"
 sFilenamePrincipal=sPre+"principal.csv"
 dPrincipal={}
 
@@ -334,6 +334,7 @@ while True:
   ## Crear concesionario y vehículos:
   if ( cmd == 1 ):
     crearConcesionario()
+    leeDiccionarioPrincipal()
     continue
 
   # Consultar concesionario
@@ -384,4 +385,3 @@ while True:
 
   else:
     continue
-
