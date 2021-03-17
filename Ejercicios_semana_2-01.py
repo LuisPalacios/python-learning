@@ -41,51 +41,21 @@ from datetime import datetime
 
 # ======= VARIABLES
 
-#filename="la-liga-2019.csv"
-filenameResultados2019="la-liga-2019.csv"
+# Fichero fuente de datos
+filenameResultados2019="la-liga-2019.csv" 
 
-# Variables globales
-listaPartidos=[]
+# Lista "global" donde guardaré los resultados de cada partido que encuentre en el fichero fuente de datos CSV
+# Cada entrada contienen un diccionario con dichros resultados, con el siguiente formato. 
+#
+#   listaPartidos = [
+#     { 'Round Number':<valor>, 'Date':<valor>, 'Location':<valor>, 'Home Team':<valor>, 'Away Team':<valor>, 'Result':<valor> }
+#     :
+#     :
+#   ]
+listaPartidos=[]                          
+
 
 # ======= FUNCIONES
-
-# Cargar CSV en un diccionario
-def errorNoTengoDatos():
-  """
-    Informa que la BBDD de Partidos está vacía
-  """
-  print("Error: la base de datos está vacía, no tengo datos")
-  return
-
-
-# Cargar CSV en una lista de diccionarios
-def leerCSVenListaDict(filename):
-  """
-    Leer un fichero CSV y lo mete en un diccionario. 
-
-    En la primera línea tenemos las CLAVES. 
-    En el resto de líneas los VALOREs.
-  """
-
-  # Si voy a asignarle algo a una variable global tengo que indicar que es global
-  global listaPartidos
-
-  listaPartidos=[]
-  with open(filename,'r') as fd:
-    first_line = fd.readline().strip() # Leo la primera línea con las claves, quitando el \n
-    keys=first_line.split(",")
-    nKeys=len(keys)
-    for values_line in fd:  # Leo el resto de líneas
-      values_line=values_line.strip() # quito el \n del final si lo tuviese
-      values=values_line.split(",") 
-      dict={}
-      for i in range(nKeys):  # Guardo todos los valores en sus claves correspondientes
-        dict[keys[i]] = values[i]
-      listaPartidos.append(dict)
-
-  if not ( len(listaPartidos) ):
-    errorNoTengoDatos()
-  return 
 
 # Menú de opciones
 def menu():
@@ -113,29 +83,68 @@ def menu():
 
   return cmd
 
-# 
+# Leer los resultados de los partidos, 
 def LeerPartidos():
   """
-    **LeerPartidos()**: Función que lee el fichero y devuelve una lista 
-    con los partidos (cada partido se va a guardar en un diccionario).
+    Esta función lee la fuente de datos desde fichero CSV y lo mete en la lista "listaPartidos=[]"
+    
+    Espero que me pasen las siguientes variables: 
 
-    Leo el CSV y además 
+      filename: Un string con el nombre del fichero csv
 
+    En la primera línea tenemos las CLAVES. 
+    En el resto de líneas los VALOREs.
   """
 
-  # Leo el CSV en el diccionario "dictPartidos"
-  #
-  leerCSVenListaDict(filenameResultados2019)
+  # Identifico la variable "listaPartidos" como Global porque VOY A MODIFICARLA !!
+  # Solo hace falta identificarla como global cuando se modifica, si solo se va a leer no es necesario. 
+  # Si no lo haces y la modificas entonces entonces te crea una variable local de esta función. 
+  global listaPartidos
+  # Inicializo a cero la lista global
+  listaPartidos=[]
 
-  return
+  # Abro el fichero en lectura
+  with open(filenameResultados2019,'r') as fd:
+    first_line = fd.readline().strip()  # Leo la primera línea con las claves, quitando el \n
+    keys=first_line.split(",")          # Guardo cada string separada por comas en la lista keys[]
+    nKeys=len(keys)                     # También me guardo cuantas claves tengo.
+
+    # Recorro el resto de líneas del fichero CSV
+    for values_line in fd:  
+      values_line=values_line.strip()   # Leo una línea y le quito el \n del final si lo tuviese.
+      values=values_line.split(",")     # Guardo cada string separada por comas en la lista valores[]
+      dict={}                           # Defino la variable "dict" como un diccionario vacío
+
+      # Cada Clave recibe su Valor, el diccionario "dict" quedará así:
+      #  { 'Round Number':<valor>, 
+      #    'Date':<valor>, 
+      #    'Location':<valor>, 
+      #    'Home Team':<valor>, 
+      #    'Away Team':<valor>, 
+      #    'Result':<valor> 
+      #  }
+      for i in range(nKeys):  
+        dict[keys[i]] = values[i]
+
+      # Añado este Diccionario (resultados de este partido) a mi lista global
+      listaPartidos.append(dict)
+
+  if not ( len(listaPartidos) ):
+    # Informa que el fichero fuente CSV debía venir sin datos válidos ... 
+    print("Error: la base de datos está vacía, no tengo datos")
+  
+  return 
 
 
+
+# Devolver información de un equipo concreto.
 def infoEquipo(equipo):
   """ 
-    **InfoEquipos(equipo)**: Función que recibe un nombre de un equipo y 
-    devuelve una lista con los paridos ganados, perdidos y empatados.
+    Función que recibe un nombre de un equipo y muestra 
+    cuales han sido sus paridos ganados, perdidos y empatados.
 
-    Espero recibir una lista de tuplas "nombre_equipo, diccionario_valores", lo devuelto por Quiniela()
+    Uso la función Quiniela() que me devuelve una lista de tuplas "nombre_equipo, diccionario_valores",
+    y busco en ella al equipo sobre el cual de interrogan
     [
        ( "equipo1", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
        ( "equipo2", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
@@ -144,18 +153,17 @@ def infoEquipo(equipo):
 
   """
 
-  # Si no le he hecho ya, leo el fichero CSV y lo cargo en una 
-  # lista con todos los resultados de los partidos. Asumo que las claves son: 
-  # 'Round Number':, 'Date':, 'Location':, 'Home Team':, 'Away Team':, 'Result':
+  # Si no le he hecho ya, leo el fichero CSV 
   if not (len(listaPartidos) ):
     LeerPartidos()
 
   # Pido la Quiniela a fecha de hoy
   now = datetime.now()
-  quiniela = Quiniela(now.day, now.month, now.year)
+  quiniela = creaQuinielaHastaFecha(now.day, now.month, now.year)
 
   # Convierto lo que me devuelven a un diccionario
   dictEquipos = dict(quiniela)
+
 
   # Si existe el equipo que me pasan pues muestro sus datos
   if  equipo in dictEquipos:
@@ -204,6 +212,25 @@ def showEquipos(listaEquipos):
     print(equipo)
   
 
+#
+# Muestro en pantalla la situación actual de la quiniela
+def showQuiniela(quiniela):
+  """
+    Muestro en pantalla la situación actual de la quiniela. 
+
+    Espero recibir una lista de tuplas "nombre_equipo, diccionario_valores" como este ejemplo:     
+    [
+       ( "equipo1", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
+       ( "equipo2", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
+       :
+    ]
+
+  """
+  print("Equipo                PT PG PE PP")
+  print("---------------------------------")
+  for equipo,valores in quiniela:
+    print("{:<20}: {:>2} {:>2} {:>2} {:>2}".format(equipo, valores["Puntos"], valores["Ganados"], valores["Empatados"], valores["Perdidos"]))
+
 
 #
 # número de goles que ha metido, los paridos ganados, perdidos y empatados
@@ -213,7 +240,7 @@ def showEquipos(listaEquipos):
 # PJ: Partidos jugados, PG: Partidos Ganados
 # PE: Partidos Empatados, PP: Partidos Perdidos, 
 # GF: Goles a favor, GC: Goles en contra
-def Quiniela(día, mes, año):
+def creaQuinielaHastaFecha(día, mes, año):
   """
     **Quiniela(dia,mes,año)**: Función que recibe el día, el mes y el año. 
     
@@ -284,26 +311,6 @@ def Quiniela(día, mes, año):
   return sorted(dictLigaTotal.items(), key = lambda x: x[1]['Puntos'], reverse=True) 
 
 
-#
-# Muestro en pantalla la situación actual de la quiniela
-def printQuiniela(quiniela):
-  """
-    Muestro en pantalla la situación actual de la quiniela. 
-
-    Espero recibir una lista de tuplas "nombre_equipo, diccionario_valores" como este ejemplo:     
-    [
-       ( "equipo1", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       ( "equipo2", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       :
-    ]
-
-  """
-  print("Equipo                PT PG PE PP")
-  print("---------------------------------")
-  for equipo,valores in quiniela:
-    print("{:<20}: {:>2} {:>2} {:>2} {:>2}".format(equipo, valores["Puntos"], valores["Ganados"], valores["Empatados"], valores["Perdidos"]))
-
-
 
 # =================================
 # ======= INICIO DEL PROGRAMA
@@ -342,7 +349,7 @@ while True:
     """
     # Qué fecha tenemos?
     now = datetime.now()
-    printQuiniela(Quiniela(now.day, now.month, now.year))
+    showQuiniela(creaQuinielaHastaFecha(now.day, now.month, now.year))
 
   # Quiniela
   elif ( cmd == 4): 
@@ -352,7 +359,7 @@ while True:
     día=int(input("Día: "))
     mes=int(input("Mes: "))
     año=int(input("Año: "))
-    printQuiniela(Quiniela(día, mes, año))
+    showQuiniela(creaQuinielaHastaFecha(día, mes, año))
 
   # Salir
   elif ( cmd == 0):
