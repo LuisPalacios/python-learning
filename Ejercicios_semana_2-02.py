@@ -39,12 +39,12 @@ from datetime import datetime
 # ======= VARIABLES
 """
   Fichero Principal: Lista de tuplas (concesionario, diccionario_datos)
-  Nombre: .tmp_principal.csv
+  Nombre: tmp_principal.csv
     NombreConcesionario, Ciudad, Fichero
     :
   
   Fichero Concesionarios (filename=Nombre_Concesionario):
-  Nombre: .tmp_<matrícula>.csv
+  Nombre: tmp_<matrícula>.csv
     Matricula, Marca, Precio, Tipo
     :
 """
@@ -56,7 +56,7 @@ dPrincipal={}
 """
   Resto
 """
-bCleanPrincipal=True  # Cada vez que se arranque el programa se vacía el fichero de Concesionarios
+bCleanPrincipal=False  # Cada vez que se arranque el programa se vacía el fichero de Concesionarios
 
 
 
@@ -139,10 +139,10 @@ def muestraTodo():
     sCiudad=dPrincipal[sNombreConcesionario]['Ciudad']
     for sMatrícula in dPrincipal[sNombreConcesionario]['Vehículos']:
       dVehículo=dPrincipal[sNombreConcesionario]['Vehículos'][sMatrícula]
-      print( " -> " + sNombreConcesionario + " en " + sCiudad + ": " + sMatrícula + " - " + " - Marca: " + dVehículo['Marca'] + " - Precio: " + str(dVehículo['Precio']) + " - Tipo: " + dVehículo['Tipo'] )
+      print( " -> " + sNombreConcesionario + " en " + sCiudad + ": " + sMatrícula + " 8- Marca: " + dVehículo['Marca'] + " - Precio: " + str(dVehículo['Precio']) + " - Tipo: " + dVehículo['Tipo'] )
 
 
-## Creo el fichero del Concesionario y añado una entrada en el Principal apuntdo a él. 
+## Creo el fichero del Concesionario y añado una entrada en el Principal apuntando a él. 
 #
 def creaFicheroConcesionarioYAñadeAFicheroPrincipal(sNombre, sCiudad, dVehículos):
 
@@ -153,7 +153,7 @@ def creaFicheroConcesionarioYAñadeAFicheroPrincipal(sNombre, sCiudad, dVehícul
   sFilenameConcesionario=sPre+sNombre+".csv"
 
   # Crea el fichero del concesionario en formato CSV
-  with open(sFilenameConcesionario, 'w') as fd:
+  with open(sFilenameConcesionario, 'a') as fd:
     for key,value in dVehículos.items():
       linea=str(key+","+value["Marca"]+","+value["Precio"]+","+value["Tipo"]+"\n")
       fd.write(linea)

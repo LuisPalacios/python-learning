@@ -146,17 +146,12 @@ def LeerPartidos():
 # Devolver información de un equipo concreto.
 def infoEquipo(equipo):
   """ 
-    Función que recibe un nombre de un equipo y muestra 
-    cuales han sido sus paridos ganados, perdidos y empatados.
-
-    Uso la función Quiniela() que me devuelve una lista de tuplas "nombre_equipo, diccionario_valores",
-    y busco en ella al equipo sobre el cual de interrogan
-    [
-       ( "equipo1", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       ( "equipo2", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       :
-    ]
-
+    Función que recibe un nombre de un equipo y muestra toda su información en la quiniela
+    Espero recibir un Diccionario del tipo:
+       d = {
+          "equipoX": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
+          :
+        }
   """
 
   # Si no le he hecho ya, leo el fichero CSV 
@@ -173,9 +168,9 @@ def infoEquipo(equipo):
 
   # Si existe el equipo que me pasan pues muestro sus datos
   if  equipo in dictEquipos:
-    print("Equipo                PT PG PE PP")
-    print("---------------------------------")
-    print("{:<20}: {:>2} {:>2} {:>2} {:>2}".format(equipo, dictEquipos[equipo]["Puntos"], dictEquipos[equipo]["Ganados"], dictEquipos[equipo]["Empatados"], dictEquipos[equipo]["Perdidos"])) 
+    print("Equipo                PT PG PE PP GF GC")
+    print("---------------------------------------")
+    print("{:<20}: {:>2} {:>2} {:>2} {:>2} {:>2} {:>2}".format(equipo, dictEquipos[equipo]["Puntos"], dictEquipos[equipo]["PG"], dictEquipos[equipo]["PE"], dictEquipos[equipo]["PP"], dictEquipos[equipo]["GF"], dictEquipos[equipo]["GC"])) 
   else:
     print("Lo siento pero ese equipo no está en la Liga")
 
@@ -224,22 +219,21 @@ def showQuiniela(quiniela):
   """
     Muestro en pantalla la situación actual de la quiniela. 
 
-    Espero recibir una lista de tuplas "nombre_equipo, diccionario_valores" como este ejemplo:     
-    [
-       ( "equipo1", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       ( "equipo2", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       :
-    ]
+    Espero recibir un Diccionario del tipo: 
+       d = {
+          "equipoX": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
+          :
+        }
 
   """
-  print("Equipo                PT PG PE PP")
-  print("---------------------------------")
+  print("Equipo                PT PG PE PP GF GC")
+  print("---------------------------------------")
   for equipo,valores in quiniela:
-    print("{:<20}: {:>2} {:>2} {:>2} {:>2}".format(equipo, valores["Puntos"], valores["Ganados"], valores["Empatados"], valores["Perdidos"]))
+    print("{:<20}: {:>2} {:>2} {:>2} {:>2} {:>2} {:>2}".format(equipo, valores["Puntos"], valores["PG"], valores["PE"], valores["PP"], valores["GF"], valores["GC"]))
 
 
 #
-# número de goles que ha metido, los paridos ganados, perdidos y empatados
+# número de goles que ha metido, los partidos ganados, perdidos y empatados
 #
 # PT, PJ, PG, PE, PP, GF, GC
 # PT: Puntos, 
@@ -250,17 +244,12 @@ def creaQuinielaHastaFecha(día, mes, año):
   """
     **Quiniela(dia,mes,año)**: Función que recibe el día, el mes y el año. 
     
-    Devuelve una lista con los partidos y resultados de la quiniela
-    hasta la fecha que nos han pasado. 
-
-    Devuelve una lista del tipo: 
-     
-    return [
-       ( "equipo1", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       ( "equipo2", {{ 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x} ),
-       :
-     ]
-
+    Devuelve un diccionario con los equipos y sus datos ordenado según la clasificación en la Quiniela
+       d = {
+          "equipoX": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
+          :
+        }
+    
   """
   dictLigaTotal={}
 
@@ -273,8 +262,8 @@ def creaQuinielaHastaFecha(día, mes, año):
   # Creo un diccionario para la Quiniela, con el NOMBRE DEL EQUIPO como clave
   if ( len(listaPartidos) > 0 ):
 
-    # Creo el diccionario dictLigaTotal {}
-
+    # Creo el diccionario "dictLigaTotal"
+    #
     #   Desde aquí:
     #   listaPartidos = [
     #  
@@ -286,9 +275,9 @@ def creaQuinielaHastaFecha(día, mes, año):
     #   Donde la Clave == Nombre del equipo y el Valor es un Diccionario con sus Datos. 
     #   
     #   dictLigaTotal = {
-    #      "equipo1": { 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x},
-    #      :
-    #      "equipo20": { 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x},
+    #      "equipo1": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
+    #
+    #      "equipo20": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
     #    }
     #
 
@@ -301,58 +290,50 @@ def creaQuinielaHastaFecha(día, mes, año):
 
         if partidoDate <= fechaCorte: 
           if not partido["Home Team"] in dictLigaTotal:
-              dictLigaTotal[partido["Home Team"]] = { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'Ganados':0, 'Perdidos':0, 'Empatados':0 }
+              dictLigaTotal[partido["Home Team"]] = { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 }
           if not partido["Away Team"] in dictLigaTotal:
-              dictLigaTotal[partido["Away Team"]] = { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'Ganados':0, 'Perdidos':0, 'Empatados':0 }
+              dictLigaTotal[partido["Away Team"]] = { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 }
 
           golesCasa=int(partido["Result"].split('-')[0])
           golesVisitante=int(partido["Result"].split('-')[1])
 
-          dictLigaTotal[partido["Home Team"]]["Goles casa"] = dictLigaTotal[partido["Home Team"]]["Goles casa"] + golesCasa
-          dictLigaTotal[partido["Home Team"]]["Goles total"] = dictLigaTotal[partido["Home Team"]]["Goles total"] + golesCasa
+          dictLigaTotal[partido["Home Team"]]["GF"] += golesCasa
+          dictLigaTotal[partido["Away Team"]]["GF"] += golesVisitante
 
-          dictLigaTotal[partido["Away Team"]]["Goles fuera"] = dictLigaTotal[partido["Away Team"]]["Goles fuera"] + golesVisitante
-          dictLigaTotal[partido["Away Team"]]["Goles total"] = dictLigaTotal[partido["Away Team"]]["Goles total"] + golesVisitante
+          dictLigaTotal[partido["Home Team"]]["GC"] += golesVisitante
+          dictLigaTotal[partido["Away Team"]]["GC"] += golesCasa
+
+          dictLigaTotal[partido["Home Team"]]["Goles casa"] += golesCasa
+          dictLigaTotal[partido["Home Team"]]["Goles total"] += golesCasa
+
+          dictLigaTotal[partido["Away Team"]]["Goles fuera"] += golesVisitante
+          dictLigaTotal[partido["Away Team"]]["Goles total"] += golesVisitante
 
           if ( golesCasa > golesVisitante ):
-            dictLigaTotal[partido["Home Team"]]["Ganados"] = dictLigaTotal[partido["Home Team"]]["Ganados"] + 1
-            dictLigaTotal[partido["Home Team"]]["Puntos"] = dictLigaTotal[partido["Home Team"]]["Puntos"] + 3
-            dictLigaTotal[partido["Away Team"]]["Perdidos"] = dictLigaTotal[partido["Away Team"]]["Perdidos"] + 1
+            dictLigaTotal[partido["Home Team"]]["PG"] += 1
+            dictLigaTotal[partido["Home Team"]]["Puntos"] += 3
+            dictLigaTotal[partido["Away Team"]]["PP"] += 1
 
           elif ( golesCasa < golesVisitante ):
-            dictLigaTotal[partido["Home Team"]]["Perdidos"] = dictLigaTotal[partido["Home Team"]]["Perdidos"] + 1
-            dictLigaTotal[partido["Away Team"]]["Ganados"] = dictLigaTotal[partido["Away Team"]]["Ganados"] + 1
-            dictLigaTotal[partido["Away Team"]]["Puntos"] = dictLigaTotal[partido["Away Team"]]["Puntos"] + 3
+            dictLigaTotal[partido["Home Team"]]["PP"] += 1
+            dictLigaTotal[partido["Away Team"]]["PG"] += 1
+            dictLigaTotal[partido["Away Team"]]["Puntos"] += 3
 
           else:
-            dictLigaTotal[partido["Home Team"]]["Empatados"] = dictLigaTotal[partido["Home Team"]]["Empatados"] + 1
-            dictLigaTotal[partido["Home Team"]]["Puntos"] = dictLigaTotal[partido["Home Team"]]["Puntos"] + 1
-            dictLigaTotal[partido["Away Team"]]["Empatados"] = dictLigaTotal[partido["Away Team"]]["Empatados"] + 1
-            dictLigaTotal[partido["Away Team"]]["Puntos"] = dictLigaTotal[partido["Away Team"]]["Puntos"] + 1
+            dictLigaTotal[partido["Home Team"]]["PE"] += + 1
+            dictLigaTotal[partido["Home Team"]]["Puntos"] += 1
+            dictLigaTotal[partido["Away Team"]]["PE"] += 1
+            dictLigaTotal[partido["Away Team"]]["Puntos"] += 1
 
+   
+  # Recreo el diccionario y voy a añadir los mismos datos que tengo en dictLigaTotal
+  # pero esta vez los iré añadiendo sobre la base del oden inverso de los puntos. 
+  # Este truco permite "ordenar" diccionarios, que de por sí no son entidades "ordenables"
+  # pero me viene muy bien para luego mostrar los datos en "orden"
+  dictOrdenado=sorted(dictLigaTotal.items(), key = lambda x: x[1]['Puntos'], reverse=True) 
 
-
-    #   dictLigaTotal = {
-    #      "equipo1": { 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x},
-    #      :
-    #      "equipo20": { 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x},
-    #    }
-    #
-
-  print("dictLigaTotal = {")
-  for key in dictLigaTotal:
-    dictDatosDeKey = dictLigaTotal[key]  # { 'Puntos':x, 'Goles casa':x, 'Goles fuera':x, 'Goles total':x, 'Ganados':x, 'Perdidos':x, 'Empatados':x}
-    print("    '"+key+"',"+"{ 'Puntos':"+str(dictDatosDeKey['Puntos'])+", 'Goles casa':"+str(dictDatosDeKey['Goles casa'])+", 'Goles fuera':"+str(dictDatosDeKey['Goles fuera'])+", 'Goles total':"+str(dictDatosDeKey['Goles total'])+", 'Ganados':"+str(dictDatosDeKey['Ganados'])+", 'Perdidos':"+str(dictDatosDeKey['Perdidos'])+", 'Empatados':"+str(dictDatosDeKey['Empatados'])+"}")
-    print("    '"+key+"',"+"{ 'Puntos':"+str(dictLigaTotal[key]['Puntos'])+", 'Goles casa':"+str(dictLigaTotal[key]['Goles casa'])+", 'Goles fuera':"+str(dictLigaTotal[key]['Goles fuera'])+", 'Goles total':"+str(dictLigaTotal[key]['Goles total'])+", 'Ganados':"+str(dictLigaTotal[key]['Ganados'])+", 'Perdidos':"+str(dictLigaTotal[key]['Perdidos'])+", 'Empatados':"+str(dictLigaTotal[key]['Empatados'])+"}")
-
-  print("}")
-  
-
-    
-  # Ordeno el diccionario basándome en el campo Puntos. El resultado se 
-  # Se devuelve una lista de tuples dictLigaTotalSorted=[("equipo",{valores}),...]
-  return sorted(dictLigaTotal.items(), key = lambda x: x[1]['Puntos'], reverse=True) 
-
+  # Devuelvo dicho dictionario ordenado
+  return dictOrdenado
 
 
 # =================================
