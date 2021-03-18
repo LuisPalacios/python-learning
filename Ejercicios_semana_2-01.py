@@ -1,6 +1,6 @@
 
 # Curso Python - 
-# 20210314. Luis Palacios
+# 20210318. Luis Palacios
 #
 
 """
@@ -86,21 +86,17 @@ def menu():
 # Leer los resultados de los partidos, 
 def LeerPartidos():
   """
-    Esta función lee la fuente de datos desde fichero CSV y lo mete en la lista "listaPartidos=[]"
+    Esta función lee el CSV fuente de datos y lo mete en una LISTA: "listaPartidos"
     
-    Espero que me pasen las siguientes variables: 
-
-      filename: Un string con el nombre del fichero csv
-
-    En la primera línea tenemos las CLAVES. 
-    En el resto de líneas los VALOREs.
+    En la primera línea del CSV espero encontrar las CLAVES, el resto de líneas los VALOREs.
   """
 
-  # Identifico la variable "listaPartidos" como Global porque VOY A MODIFICARLA !!
-  # Solo hace falta identificarla como global cuando se modifica, si solo se va a leer no es necesario. 
+  # Defino la variable "listaPartidos" como Global porque VOY A MODIFICARLA !!
+  # Solo hace falta definirla como global cuando se modifica, si solo se va a leer no es necesario
   # Si no lo haces y la modificas entonces entonces te crea una variable local de esta función. 
   global listaPartidos
-  # Inicializo a cero la lista global
+
+  # Inicializo a cero la lista global donde guardaré los datos del CSV
   listaPartidos=[]
 
   # Abro el fichero en lectura
@@ -109,62 +105,56 @@ def LeerPartidos():
     keys=first_line.split(",")          # Guardo cada string separada por comas en la lista keys[]
     nKeys=len(keys)                     # También me guardo cuantas claves tengo.
 
-    # Recorro el resto de líneas del fichero CSV
+    # Recorro resto de líneas del fichero
     for values_line in fd:  
       values_line=values_line.strip()   # Leo una línea y le quito el \n del final si lo tuviese.
-      values=values_line.split(",")     # Guardo cada string separada por comas en la lista valores[]
+      values=values_line.split(",")     # Guardo los contenidos separados por comas en la lista valores[]
       dict={}                           # Defino la variable "dict" como un diccionario vacío
 
-      # Cada Clave recibe su Valor, el diccionario "dict" quedará así:
-      #  { 'Round Number':<valor>, 
-      #    'Date':<valor>, 
-      #    'Location':<valor>, 
-      #    'Home Team':<valor>, 
-      #    'Away Team':<valor>, 
-      #    'Result':<valor> 
-      #  }
+      # Creo un diccionario con las keys = valores, 
       for i in range(nKeys):  
         dict[keys[i]] = values[i]
 
-      # Añado este Diccionario (resultados de este partido) a mi lista global, que quedará así:
+      # Dicho diccionario lo añado a la LISTA GLOBAL listaPartidos[], que quedará así:
       #
-      #   [
+      # listaPartidos = [
       #     { 'Round Number':<valor>, 'Date':<valor>, 'Location':<valor>, 'Home Team':<valor>, 'Away Team':<valor>, 'Result':<valor> 
       #     :
       #   ]
       #
       listaPartidos.append(dict)
 
+  # Si no conseguí leer nada ni crearme mi lista... 
   if not ( len(listaPartidos) ):
-    # Informa que el fichero fuente CSV debía venir sin datos válidos ... 
     print("Error: la base de datos está vacía, no tengo datos")
   
   return 
-
 
 
 # Devolver información de un equipo concreto.
 def infoEquipo(equipo):
   """ 
     Función que recibe un nombre de un equipo y muestra toda su información en la quiniela
-    Espero recibir un Diccionario del tipo:
-       d = {
-          "equipoX": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
-          :
-        }
   """
 
   # Si no le he hecho ya, leo el fichero CSV 
   if not (len(listaPartidos) ):
     LeerPartidos()
 
-  # Pido la Quiniela a fecha de hoy
+  # Pido la Quiniela a fecha de hoy.
   now = datetime.now()
-  quiniela = creaQuinielaHastaFecha(now.day, now.month, now.year)
+  quiniela = creaQuinielaHastaFecha(now.day, now.month, now.year) #  Devuelve una LISTA DE TUPLAS
+  # quiniela = [
+  #   ( 'equipoX', { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 } ),
+  #   : 
+  # ]
 
-  # Convierto lo que me devuelven a un diccionario
+  # Convierto la lista de tuplas a un DICCIONARIO
   dictEquipos = dict(quiniela)
-
+  # dictEquipos = {
+  #   'equipoX', { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
+  #   : 
+  # }
 
   # Si existe el equipo que me pasan pues muestro sus datos
   if  equipo in dictEquipos:
@@ -206,9 +196,11 @@ def showEquipos(listaEquipos):
   """
     **Equipos()**: Muestra la lista de equipos
   """
+
   print ("\nEquipos")
   print ("=======================")
-  # Muestro la lista
+
+  # Muestro los equipos
   for equipo in listaEquipos:
     print(equipo)
   
@@ -219,13 +211,14 @@ def showQuiniela(quiniela):
   """
     Muestro en pantalla la situación actual de la quiniela. 
 
-    Espero recibir un Diccionario del tipo: 
-       d = {
-          "equipoX": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
-          :
-        }
+    Espero recibir una LISTA DE TUPLAS del tipo: 
+      lista = [
+        ( 'equipoX', { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 } ),
+        : 
+      ]
 
   """
+  print("")
   print("Equipo                PT PG PE PP GF GC")
   print("---------------------------------------")
   for equipo,valores in quiniela:
@@ -244,11 +237,11 @@ def creaQuinielaHastaFecha(día, mes, año):
   """
     **Quiniela(dia,mes,año)**: Función que recibe el día, el mes y el año. 
     
-    Devuelve un diccionario con los equipos y sus datos ordenado según la clasificación en la Quiniela
-       d = {
-          "equipoX": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
-          :
-        }
+    Devuelve una LISTA DE TUPLAS con los equipos y sus datos ordenado según el campo 'Puntos'
+      quiniela = [
+        ( 'equipoX', { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 } ),
+        : 
+      ]
     
   """
   dictLigaTotal={}
@@ -262,23 +255,19 @@ def creaQuinielaHastaFecha(día, mes, año):
   # Creo un diccionario para la Quiniela, con el NOMBRE DEL EQUIPO como clave
   if ( len(listaPartidos) > 0 ):
 
-    # Creo el diccionario "dictLigaTotal"
-    #
-    #   Desde aquí:
-    #   listaPartidos = [
-    #  
+    # Desde listaPartidos = [
     #     { 'Round Number':<valor>, 'Date':<valor>, 'Location':<valor>, 'Home Team':<valor>, 'Away Team':<valor>, 'Result':<valor> 
     #     :
-    #    ]
+    #  ]
     #
-    #   Lo convierto a una DICCIONARIO con múltiples entradas del tipo Clave: Valor. 
-    #   Donde la Clave == Nombre del equipo y el Valor es un Diccionario con sus Datos. 
+    # Creo el diccionario "dictLigaTotal" con múltiples entradas del tipo Clave: Valor. 
+    # Donde la Clave == Nombre del equipo y el Valor es un Diccionario con sus Datos. 
     #   
-    #   dictLigaTotal = {
-    #      "equipo1": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
-    #
-    #      "equipo20": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
-    #    }
+    # dictLigaTotal = {
+    #   "equipo1": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
+    #   :
+    #   "equipo20": { 'Puntos':0, 'Goles casa':0, 'Goles fuera':0, 'Goles total':0, 'PG':0, 'PP':0, 'PE':0, 'GF':0, 'GC':0 },
+    # }
     #
 
     for partido in listaPartidos:
@@ -326,10 +315,7 @@ def creaQuinielaHastaFecha(día, mes, año):
             dictLigaTotal[partido["Away Team"]]["Puntos"] += 1
 
    
-  # Recreo el diccionario y voy a añadir los mismos datos que tengo en dictLigaTotal
-  # pero esta vez los iré añadiendo sobre la base del oden inverso de los puntos. 
-  # Este truco permite "ordenar" diccionarios, que de por sí no son entidades "ordenables"
-  # pero me viene muy bien para luego mostrar los datos en "orden"
+  # Ordeno el diccionario en base a los Puntos. La función sorted() devuelve una LISTA DE TUPLAS
   dictOrdenado=sorted(dictLigaTotal.items(), key = lambda x: x[1]['Puntos'], reverse=True) 
 
   # Devuelvo dicho dictionario ordenado
@@ -371,7 +357,7 @@ while True:
 
       Lo he mejorado y muestro la tabla de la liga completa, no solo los tres primeros
     """
-    # Qué fecha tenemos?
+    # Enseña la Quiniela hasta la fecha de HOY
     now = datetime.now()
     showQuiniela(creaQuinielaHastaFecha(now.day, now.month, now.year))
 
@@ -383,6 +369,7 @@ while True:
     día=int(input("Día: "))
     mes=int(input("Mes: "))
     año=int(input("Año: "))
+    # Enseña la Quiniela hasta la fecha introducida
     showQuiniela(creaQuinielaHastaFecha(día, mes, año))
 
   # Salir
