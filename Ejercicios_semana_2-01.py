@@ -36,7 +36,6 @@ Quiniela(dia,mes,año): Función que recibe el día, el mes y el año. Y devuelv
 """
 
 # Para trabajar con fechas
-from datetime import date
 from datetime import datetime
 
 # ======= VARIABLES
@@ -226,8 +225,8 @@ def showQuiniela(quiniela):
 
 
 #
-# número de goles que ha metido, los partidos ganados, perdidos y empatados
-#
+# Crea una Quiniela. 
+# 
 # PT, PJ, PG, PE, PP, GF, GC
 # PT: Puntos, 
 # PJ: Partidos jugados, PG: Partidos Ganados

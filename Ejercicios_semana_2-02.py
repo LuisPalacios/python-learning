@@ -53,11 +53,6 @@ sPre = "tmp_"
 sFilenamePrincipal = sPre+"principal.csv"
 dPrincipal = {}
 
-"""
-  Resto
-"""
-bCleanPrincipal = False  # Cada vez que se arranque el programa se vacía el fichero de Concesionarios
-
 
 # ======= FUNCIONES
 #
@@ -144,10 +139,7 @@ def muestraTodo():
 
 # Creo el fichero del Concesionario y añado una entrada en el Principal apuntando a él.
 #
-def creaFicheroConcesionarioYAñadeAFicheroPrincipal(sNombre, sCiudad, dVehículos):
-
-    # Globales
-    global bCleanPrincipal
+def creaFicheroConcesionarioYAñadeAFicheroPrincipal(sNombre, sCiudad, dVehículos, bLimpiaDatos):
 
     # Construyo el nombre del concesionario
     sFilenameConcesionario = sPre+sNombre+".csv"
@@ -161,8 +153,7 @@ def creaFicheroConcesionarioYAñadeAFicheroPrincipal(sNombre, sCiudad, dVehícul
 
     # Crea o actualiza el fichero principal en formato CSV
     filename = sPre+sNombre
-    if (bCleanPrincipal == True):
-        bCleanPrincipal = False
+    if (limpiaDatos == True):
         cAction = 'w'
     else:
         cAction = 'a'
