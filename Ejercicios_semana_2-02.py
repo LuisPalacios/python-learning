@@ -121,7 +121,7 @@ def leeDiccionarioPrincipal():
                             'Tipo': sTipo
                         }
     except:
-        print("Error al procesar el fichero de control")
+        print("Error al procesar el fichero de control.")
 
 
 # DEVELOPER MODE: Muestra todos los concesionarios y equipos
