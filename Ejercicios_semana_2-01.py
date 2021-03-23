@@ -1,6 +1,6 @@
 
 # Curso Python - 
-# 20210318. Luis Palacios
+# 20210318. Luis Palacios..
 #
 
 """

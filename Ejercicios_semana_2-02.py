@@ -5,7 +5,7 @@
 
 """
 En este ejercicio vamos a crear un programa de creación y consulta de BBDD sobre ficheros. 
-Temática concesionarios.
+Temática concesionarios. 
 
 La estructura de ficheros será la siguiente:
 
