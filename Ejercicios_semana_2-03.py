@@ -5,7 +5,9 @@
 
 """
 
-Partimos del ejercicio 02. Editar el ejercicio anterior, para trabajar con POO en lugar de con ficheros.
+Partimos del ejercicio 02 Semana 2. 
+
+Editar el ejercicio anterior, **para trabajar con POO en lugar de con ficheros.**
 
 Tendrán que existir 3 clases:
 
@@ -185,7 +187,9 @@ def consultaTipo(sTipo, bSoloMostrarNúmero, concesionarios):
                     num += 1
                 else:
                     coche.print()
-    print("Número de coches de tipo '"+sTipo+" disponibles: "+str(num))
+
+    if (bSoloMostrarNúmero == True):
+      print("Número de coches de tipo '"+sTipo+"' disponibles: "+str(num))
 
 
 # Consulta los datos de un tipo de coche concreto.

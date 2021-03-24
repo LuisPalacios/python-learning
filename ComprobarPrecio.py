@@ -21,15 +21,29 @@ Ejercicio:
     - Selenium
     - Machanize
 
-    Nota2: Cómo investigar una página Web
-    Chrome -> Alt-Cmd-i (Sección Elementos)
-    Abro amazon.es
-    Busco por ejemplo iphone12, entro en uno de ellos
-    Select Element Shift+Cmd+C
-    Buscar el id que me interesa, por ejemplo:
+    Aprendido durante la clase: 
     
-    Título: <span id="productTitle" ....
-    Precio: <span id="priceblock_ourprice" 
+        Cómo preparar el entorno Virtual
+        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        python3 get-pip.py
+        pip install virtualenv
+        virutalenv venv
+        source venv/bin/Activate
+
+        Librerias para temas de Autenticción Web: 
+        - BeautifulSoup
+        - Selenium
+        - Machanize
+
+        Cómo analizar una página Web
+        Chrome -> Alt-Cmd-i (Sección Elementos)
+        Abro amazon.es
+        Busco por ejemplo iphone12, entro en uno de ellos
+        Select Element Shift+Cmd+C
+
+        Título: <span id="productTitle" class="a-size-large product-title-word-break">Nuevo Apple iPhone 12 (128&nbsp;GB) - Azul</span>
+        Precio: <span id="priceblock_ourprice" class="a-size-medium a-color-price priceBlockBuyingPriceString">930,00&nbsp;€</span>
+
 
 '''
 
