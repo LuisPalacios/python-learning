@@ -47,9 +47,23 @@ import smtplib      # Para luego mandar un mail con la información.
 urlInicial = "https://www.amazon.es/Nuevo-Apple-iPhone-12-128-GB/dp/B08L5S3XNM"
 urlPre = "https://www.amazon.es"
 
-# Para saber mi user-agent, conectar con mi ordenador y buscar en Google "mi user-agent"
+# Para saber mi user-agent, buscar en Google "mi user-agent"
 header = { 'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36" }
 
+# Función para dividir una Cadena. 
+# 
+#   Entrada : Cadena (s) en la ocurrencia (n) del delimitador (delim)
+#   Salida  : Dupla
+#
+# Ejemplo, para limpiar URL's de Amazon
+#     s = "/dp/B08L6XHW5C/ref=es_a_phone11_3/257-2200312-1771441"
+#     out = split_at(s, '/', 3)
+#
+#     out = ('/dp/B08L6XHW5C', 'ref=es_a_phone11_3/257-2200312-1771441')
+#
+def split_at(cadena, delim, n):
+    r = cadena.split(delim, n)[n]
+    return cadena[:-len(r)-len(delim)], r
 
 # Dado un contenido busco y muestro el nombre del producto y su precio 
 # 
@@ -67,12 +81,16 @@ def enlacesTelefonosEnPanel(soup):
     # Panel con todos los teléfonos: id = kfs-item-container
     panel = soup.find(id='kfs-item-container0')
 
+    # Busco los enlaces en el PANEL. 
     lista=[]
     listavalidos=[]
     enlaces = panel.find_all('a')
     for link in enlaces:
         linkhref = link.get('href')
         if linkhref.startswith('/dp'):
+            # En linkhref tengo entradas del tipo "/dp/B08L5QJDLC/257-3222011-4811726"
+            # Uso la función split_at para quedarme con /dp/B08L5QJDLC
+            linkhref = split_at(linkhref, '/', 3)[0]
             lista.append(linkhref)
     return(lista)
 
@@ -97,8 +115,11 @@ for count in range(2):
     # Averiguo los enlaces a todos los teléfonos
     urlsTelefonos = enlacesTelefonosEnPanel(soup)
     for url in urlsTelefonos:
+        # Construyo la URL con "https://www.amazon.es + /dp/XXXX..."
         url = urlPre + url
         print(url,":")
+        
+        ## Entro en la nueva URL y busco el Título y el Precio
         producto = requests.get(url, headers=header)
         prodsoup = BeautifulSoup(producto.content, 'html.parser')
         # busco y muestro el nombre del producto y su precio 
