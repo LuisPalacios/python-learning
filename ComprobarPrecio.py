@@ -117,11 +117,10 @@ pagina = requests.get(urlInicial, headers=header)
 soup = BeautifulSoup(pagina.content, 'html.parser')
 
 # Entro en los productos listados en el panel de dicha página
-# NOTA: Solo hago 5 iteracciones, 
-#       para hacerlo permanente sustituir este for por 
-#       While True:
-# 
+#
 for count in range(2):
+    # NOTA: Solo hago 2 iteracciones, 
+    # para hacerlo permanente sustituir este for por "While True:"
 
     # Muestro la hora actual
     print("\n"+time.ctime()+"\n========================")
@@ -140,4 +139,4 @@ for count in range(2):
         comprobar_precio(prodsoup)
 
     # Espero 10secs
-    time.sleep(5)
+    time.sleep(10)
