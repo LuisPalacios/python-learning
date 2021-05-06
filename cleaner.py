@@ -58,6 +58,7 @@ for filename in os.listdir(dirIn):
             fmCategories=False
             fmTags=False
             for index, line in enumerate(lines):
+
                 # Detecto el Front Matter
                 if ( index == 0 ) and line == "---": 
                     frontMatter=True
@@ -129,7 +130,17 @@ for filename in os.listdir(dirIn):
                         urlSplitted = url.rsplit('/', 1)
                         url = f'/assets/img/original/{urlSplitted[-1]:s}'
                         formato = '{: width="730px" padding:10px }'
-                        lines[index] = "%s![%s](%s)%s%s" % (antes, comentario, url, formato, despues)
+                        #lines[index] = "%s![%s](%s)%s%s" % (antes, comentario, url, formato, despues)
+
+#{% include showImagen.html 
+#      src="/assets/img/posts/x11-desde-root-1.png" 
+#      caption="Preferencias XQuartz en cliente Mac." 
+#      width="600px"
+#      %}
+
+                        lines[index] = "{%% include showImagen.html\n    src=\"%s\"\n    caption=\"%s\"\n    width=\"600px\"\n    %%}" % (url, comentario)
+
+
                         #print("!! ", lines[index])
 
         # Write back the file
